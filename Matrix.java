@@ -72,6 +72,65 @@ public class Matrix {
         return index;
     }
 
+    public Matrix add(Matrix theMatrix) {
+        if (theMatrix.getRows() != ROWS || theMatrix.getCols() != COLS) {
+            throw new IllegalArgumentException("Matrices must have same columns and rows.");
+        }
+        Matrix result = new Matrix(ROWS, COLS);
+        for (int i = 0; i < MATRIX.length; i++) {
+            result.MATRIX[i] = MATRIX[i] + theMatrix.getValue(i);
+        }
+        return result;
+    }
+
+    public Matrix subtract(Matrix theMatrix) {
+        if (theMatrix.getRows() != ROWS || theMatrix.getCols() != COLS) {
+            throw new IllegalArgumentException("Matrices must have same columns and rows.");
+        }
+        Matrix result = new Matrix(ROWS, COLS);
+        for (int i = 0; i < MATRIX.length; i++) {
+            result.MATRIX[i] = MATRIX[i] - theMatrix.getValue(i);
+        }
+        return result;
+    }
+
+    public Matrix multiply(int theScalar) {
+        Matrix result = new Matrix(ROWS, COLS);
+        for (int i = 0; i < MATRIX.length; i++) {
+            result.MATRIX[i] = MATRIX[i] * theScalar;
+        }
+        return result;
+    }
+
+    public Matrix multiply(double theScalar) {
+        Matrix result = new Matrix(ROWS, COLS);
+        for (int i = 0; i < MATRIX.length; i++) {
+            result.MATRIX[i] = MATRIX[i] * theScalar;
+        }
+        return result;
+    }
+
+    public Matrix multiply(Matrix theMatrix) {
+        if (COLS != theMatrix.getRows()) {
+            throw new IllegalArgumentException("Number of columns in matrix A must be equal to number of rows in matrix B.");
+        }
+        Matrix result = new Matrix(ROWS, theMatrix.getCols());
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < theMatrix.getCols(); j++) {
+                double sum = 0;
+                for (int k = 0; k < COLS; k++) {
+                    double a = MATRIX[i * COLS + k];
+                    double b = theMatrix.MATRIX[k * theMatrix.getCols() + j];
+
+                    sum += a * b;
+                }
+                result.MATRIX[i * theMatrix.getCols() + j] = sum;
+            }
+        }
+        return result;
+    }
+
+    @Override
     public String toString() {
         int counter = 0;
         StringBuilder finalString = new StringBuilder();
@@ -80,13 +139,30 @@ public class Matrix {
             finalString.append("[");
             for (int j = 0; j < COLS; j++) {
                 if (j == COLS - 1) {
-                    finalString.append(MATRIX[counter++]).append("] ");
+                    finalString.append(String.format("%.2f" ,MATRIX[counter++])).append("] ");
                 } else {
-                    finalString.append(MATRIX[counter++]).append(", ");
+                    finalString.append(String.format("%.2f" ,MATRIX[counter++])).append(", ");
                 }
             }
             finalString.append("\n");
         }
         return finalString.toString();
     }
+
+    @Override
+    public boolean equals(Object theObject) {
+        if (this == theObject) return true;
+        if (theObject == null || getClass() != theObject.getClass()) return false;
+        Matrix other = (Matrix) theObject;
+        if (ROWS != other.ROWS || COLS != other.COLS) return false;
+        return Arrays.equals(MATRIX, other.MATRIX);
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * (31 * ROWS + COLS) + Arrays.hashCode(MATRIX);
+    }
+
+
 }
+
