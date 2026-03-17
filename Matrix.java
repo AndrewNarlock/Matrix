@@ -3,13 +3,12 @@ import java.util.Arrays;
 public class Matrix {
     final private int ROWS;
     final private int COLS;
-    final double[] MATRIX;
+    final private double[] MATRIX;
 
     public Matrix(final int theRows, final int theCols) {
         if (theRows < 0 || theCols < 0) {
             throw new IllegalArgumentException("The number of columns and rows must be greater than or equal to zero.");
         }
-
         ROWS = theRows;
         COLS = theCols;
         MATRIX = new double[theRows * theCols];
@@ -23,7 +22,6 @@ public class Matrix {
         if (theCols * theRows < theValues.length) {
             throw new IllegalArgumentException("The number of values must be less than or equal to amount of spaces in the matrix.");
         }
-
         ROWS = theRows;
         COLS = theCols;
         MATRIX = new double[theRows * theCols];
@@ -37,23 +35,23 @@ public class Matrix {
         return COLS;
     }
 
-    public double getValue(final int theIndex) {
+    public double getValueAtIndex(final int theIndex) {
         if(theIndex < 0 || theIndex >= MATRIX.length) {
-            throw new IllegalArgumentException("The index is out of bounds.");
+            throw new IndexOutOfBoundsException("The index is out of bounds.");
         }
         return MATRIX[theIndex];
     }
 
     public double getValue(final int theRow, final int theCol) {
         if (theRow < 0 || theCol < 0 || theCol >= COLS || theRow >= ROWS) {
-            throw new IllegalArgumentException("The row or column number is out of bounds.");
+            throw new IndexOutOfBoundsException("The row or column number is out of bounds.");
         }
         return MATRIX[theRow * COLS + theCol];
     }
 
     public void setValue(final int theRow, final int theCol, final double theValue) {
         if (theRow < 0 || theCol < 0 || theCol >= COLS || theRow >= ROWS) {
-            throw new IllegalArgumentException("The row or column number is out of bounds.");
+            throw new IndexOutOfBoundsException("The row or column number is out of bounds.");
         }
         MATRIX[theRow * COLS + theCol] = theValue;
     }
@@ -78,7 +76,7 @@ public class Matrix {
         }
         Matrix result = new Matrix(ROWS, COLS);
         for (int i = 0; i < MATRIX.length; i++) {
-            result.MATRIX[i] = MATRIX[i] + theMatrix.getValue(i);
+            result.MATRIX[i] = MATRIX[i] + theMatrix.getValueAtIndex(i);
         }
         return result;
     }
@@ -89,7 +87,7 @@ public class Matrix {
         }
         Matrix result = new Matrix(ROWS, COLS);
         for (int i = 0; i < MATRIX.length; i++) {
-            result.MATRIX[i] = MATRIX[i] - theMatrix.getValue(i);
+            result.MATRIX[i] = MATRIX[i] - theMatrix.getValueAtIndex(i);
         }
         return result;
     }
@@ -130,6 +128,16 @@ public class Matrix {
         return result;
     }
 
+    public Matrix transpose() {
+        Matrix result = new Matrix(COLS, ROWS);
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLS; j++) {
+                result.setValue(j, i, getValue(i, j));
+            }
+        }
+        return result;
+    }
+
     @Override
     public String toString() {
         int counter = 0;
@@ -162,7 +170,4 @@ public class Matrix {
     public int hashCode() {
         return 31 * (31 * ROWS + COLS) + Arrays.hashCode(MATRIX);
     }
-
-
 }
-
